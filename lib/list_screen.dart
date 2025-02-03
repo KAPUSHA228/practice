@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class ListScreen extends StatefulWidget {
   @override
-  _ListScreenState createState() => _ListScreenState();
+  ListScreenState createState() => ListScreenState();
 }
 
-class _ListScreenState extends State<ListScreen> {
+class ListScreenState extends State<ListScreen> {
   List<String> list = [];
   final textController = TextEditingController();
   final indexController = TextEditingController();

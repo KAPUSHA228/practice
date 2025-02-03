@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:collection';
-import 'stack_screen.dart';
 
 class MyStack<T> {
   final List<T> _items = [];
@@ -26,17 +24,17 @@ class MyStack<T> {
 }
 class PrefixScreen extends StatefulWidget {
   @override
-  _PrefixScreenState createState() => _PrefixScreenState();
+  PrefixScreenState createState() => PrefixScreenState();
 }
 
-class _PrefixScreenState extends State<PrefixScreen> {
+class PrefixScreenState extends State<PrefixScreen> {
   final _expressionController = TextEditingController();
   String _postfixExpression = '';
 
-  void _convert() {
+  void convert() {
     String expression = _expressionController.text;
     try {
-      _postfixExpression = _infixToPostfix(expression);
+      _postfixExpression = infixToPostfix(expression);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Invalid expression: $e")),
@@ -46,7 +44,7 @@ class _PrefixScreenState extends State<PrefixScreen> {
     setState(() {});
   }
 
-  String _infixToPostfix(String expression) {
+  String infixToPostfix(String expression) {
     expression = expression.replaceAll(' ', '');
     List<String> outputQueue = [];
     MyStack<String> operatorStack =
@@ -54,7 +52,7 @@ class _PrefixScreenState extends State<PrefixScreen> {
 
     for (int i = 0; i < expression.length; i++) {
       String token = expression[i];
-      if (_isNumber(token)) {
+      if (isNumber(token)) {
         outputQueue.add(token);
       } else if (token == '(') {
         operatorStack.push(token);
@@ -65,9 +63,9 @@ class _PrefixScreenState extends State<PrefixScreen> {
         if (!operatorStack.isEmpty) {
           operatorStack.pop(); // Remove open parentheses
         }
-      } else if (_isOperator(token)) {
+      } else if (isOperator(token)) {
         while (!operatorStack.isEmpty &&
-            _hasHigherPrecedence(operatorStack.peek(), token)) {
+            hasHigherPrecedence(operatorStack.peek(), token)) {
           outputQueue.add(operatorStack.pop());
         }
         operatorStack.push(token);
@@ -86,7 +84,7 @@ class _PrefixScreenState extends State<PrefixScreen> {
     return outputQueue.join(' ');
   }
 
-  bool _isNumber(String value) {
+  bool isNumber(String value) {
     try {
       double.parse(value);
     } catch (e) {
@@ -95,11 +93,11 @@ class _PrefixScreenState extends State<PrefixScreen> {
     return true;
   }
 
-  bool _isOperator(String value) {
+  bool isOperator(String value) {
     return value == '+' || value == '-' || value == '*' || value == '/';
   }
 
-  bool _hasHigherPrecedence(String op1, String op2) {
+  bool hasHigherPrecedence(String op1, String op2) {
     if (op1 == '(') return false;
     if ((op1 == '*' || op1 == '/') && (op2 == '+' || op2 == '-')) return true;
     return false;
@@ -119,7 +117,7 @@ class _PrefixScreenState extends State<PrefixScreen> {
                   labelText: 'Enter an arithmetic expression (e.g., (1+2)*3)'),
             ),
             ElevatedButton(
-                onPressed: _convert, child: Text('Convert to Postfix')),
+                onPressed: convert, child: Text('Convert to Postfix')),
             SizedBox(height: 20),
             Text('Postfix Expression: $_postfixExpression',
                 style: TextStyle(fontSize: 18)),

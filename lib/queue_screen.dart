@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class QueueScreen extends StatefulWidget {
   @override
-  _QueueScreenState createState() => _QueueScreenState();
+  QueueScreenState createState() => QueueScreenState();
 }
 
-class _QueueScreenState extends State<QueueScreen> {
+class QueueScreenState extends State<QueueScreen> {
   List<String> queue = [];
   final textController = TextEditingController();
 

@@ -30,18 +30,18 @@ class AVLTree {
   }
 
   void insert(int data) {
-    root = _insertRec(root, data);
+    root = insertRec(root, data);
   }
 
-  Node? _insertRec(Node? node, int data) {
+  Node? insertRec(Node? node, int data) {
     if (node == null) {
       return Node(data);
     }
 
     if (data < node.data) {
-      node.left = _insertRec(node.left, data);
+      node.left = insertRec(node.left, data);
     } else if (data > node.data) {
-      node.right = _insertRec(node.right, data);
+      node.right = insertRec(node.right, data);
     } else {
       return node;
     }
@@ -51,47 +51,47 @@ class AVLTree {
 
     // Left Left Case
     if (balance > 1 && data < (node.left?.data ?? -1)) {
-      return _rotateRight(node);
+      return rotateRight(node);
     }
     // Right Right Case
     if (balance < -1 && data > (node.right?.data ?? -1)) {
-      return _rotateLeft(node);
+      return rotateLeft(node);
     }
     // Left Right Case
     if (balance > 1 && data > (node.left?.data ?? -1)) {
       if (node.left != null) {
-        node.left = _rotateLeft(node.left!);
+        node.left = rotateLeft(node.left!);
       }
-      return _rotateRight(node);
+      return rotateRight(node);
     }
 
     // Right Left Case
     if (balance < -1 && data < (node.right?.data ?? -1)) {
       if (node.right != null) {
-        node.right = _rotateRight(node.right!);
+        node.right = rotateRight(node.right!);
       }
-      return _rotateLeft(node);
+      return rotateLeft(node);
     }
     if (balance < -1 && node.right == null) {
-      return _rotateLeft(node);
+      return rotateLeft(node);
     }
     if (balance > 1 && node.left == null) {
-      return _rotateRight(node);
+      return rotateRight(node);
     }
     return node;
   }
 
   void delete(int data) {
-    root = _deleteRec(root, data);
+    root = deleteRec(root, data);
   }
 
-  Node? _deleteRec(Node? node, int data) {
+  Node? deleteRec(Node? node, int data) {
     if (node == null) return node;
 
     if (data < node.data) {
-      node.left = _deleteRec(node.left, data);
+      node.left = deleteRec(node.left, data);
     } else if (data > node.data) {
-      node.right = _deleteRec(node.right, data);
+      node.right = deleteRec(node.right, data);
     } else {
       if (node.left == null) {
         return node.right;
@@ -99,42 +99,38 @@ class AVLTree {
         return node.left;
       }
 
-      node.data = _minValue(node.right!);
-      node.right = _deleteRec(node.right, node.data);
-    }
-
-    if (node == null) {
-      return node;
+      node.data = minValue(node.right!);
+      node.right = deleteRec(node.right, node.data);
     }
     node.height = 1 + max(height(node.left), height(node.right));
     int balance = getBalance(node);
     // Left Left Case
     if (balance > 1 && getBalance(node.left) >= 0) {
-      return _rotateRight(node);
+      return rotateRight(node);
     }
     // Left Right Case
     if (balance > 1 && getBalance(node.left) < 0) {
       if (node.left != null) {
-        node.left = _rotateLeft(node.left!);
+        node.left = rotateLeft(node.left!);
       }
-      return _rotateRight(node);
+      return rotateRight(node);
     }
     // Right Right Case
     if (balance < -1 && getBalance(node.right) <= 0) {
-      return _rotateLeft(node);
+      return rotateLeft(node);
     }
     // Right Left Case
     if (balance < -1 && getBalance(node.right) > 0) {
       if (node.right != null) {
-        node.right = _rotateRight(node.right!);
+        node.right = rotateRight(node.right!);
       }
-      return _rotateLeft(node);
+      return rotateLeft(node);
     }
 
     return node;
   }
 
-  int _minValue(Node node) {
+  int minValue(Node node) {
     int minv = node.data;
     while (node.left != null) {
       minv = node.left!.data;
@@ -143,7 +139,7 @@ class AVLTree {
     return minv;
   }
 
-  Node _rotateRight(Node node) {
+  Node rotateRight(Node node) {
     Node x = node.left!;
     Node? t2 = x.right;
 
@@ -155,7 +151,7 @@ class AVLTree {
     return x;
   }
 
-  Node _rotateLeft(Node node) {
+  Node rotateLeft(Node node) {
     Node y = node.right!;
     Node? t2 = y.left;
 
@@ -168,28 +164,28 @@ class AVLTree {
   }
 
   bool search(int data) {
-    return _searchRec(root, data);
+    return searchRec(root, data);
   }
 
-  bool _searchRec(Node? node, int data) {
+  bool searchRec(Node? node, int data) {
     if (node == null) return false;
     if (data == node.data) return true;
-    if (data < node.data) return _searchRec(node.left, data);
-    return _searchRec(node.right, data);
+    if (data < node.data) return searchRec(node.left, data);
+    return searchRec(node.right, data);
   }
 
   List<String> inorderTraversal() {
     List<String> list = [];
-    _inorderTraversalRec(root, list, 0);
+    inorderTraversalRec(root, list, 0);
     return list;
   }
 
-  void _inorderTraversalRec(Node? node, List<String> list, int level) {
+  void inorderTraversalRec(Node? node, List<String> list, int level) {
     if (node != null) {
-      _inorderTraversalRec(node.left, list, level + 1);
+      inorderTraversalRec(node.left, list, level + 1);
       String indent = "  " * level;
       list.add("$indent${node.data}");
-      _inorderTraversalRec(node.right, list, level + 1);
+      inorderTraversalRec(node.right, list, level + 1);
     }
   }
 
@@ -199,11 +195,11 @@ class AVLTree {
 
   List<List<TreeItem>> buildTreeData() {
     List<List<TreeItem>> treeData = [];
-    _buildTreeDataRec(root, treeData, 0, 0);
+    buildTreeDataRec(root, treeData, 0, 0);
     return treeData;
   }
 
-  void _buildTreeDataRec(
+  void buildTreeDataRec(
       Node? node, List<List<TreeItem>> treeData, int level, double x) {
     if (node == null) {
       return;
@@ -213,24 +209,24 @@ class AVLTree {
       treeData.add([]);
     }
     const double delta = 30.0;
-    _buildTreeDataRec(node.left, treeData, level + 1, x - delta);
+    buildTreeDataRec(node.left, treeData, level + 1, x - delta);
     treeData[level].add(TreeItem("${node.data}", x));
-    _buildTreeDataRec(node.right, treeData, level + 1, x + delta);
+    buildTreeDataRec(node.right, treeData, level + 1, x + delta);
   }
 }
 
 class AvlScreen extends StatefulWidget {
   @override
-  _AvlScreenState createState() => _AvlScreenState();
+  AvlScreenState createState() => AvlScreenState();
 }
 
-class _AvlScreenState extends State<AvlScreen> {
+class AvlScreenState extends State<AvlScreen> {
   AVLTree avl = AVLTree();
   final textController = TextEditingController();
   final searchController = TextEditingController();
   final deleteController = TextEditingController();
 
-  void _delete() {
+  void delete() {
     int? data = int.tryParse(deleteController.text);
     if (data == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -244,7 +240,7 @@ class _AvlScreenState extends State<AvlScreen> {
     });
   }
 
-  void _insert() {
+  void insert() {
     int? data = int.tryParse(textController.text);
     if (data == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -258,7 +254,7 @@ class _AvlScreenState extends State<AvlScreen> {
     });
   }
 
-  void _search() {
+  void search() {
     int? data = int.tryParse(searchController.text);
     if (data == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -288,7 +284,7 @@ class _AvlScreenState extends State<AvlScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(onPressed: _insert, child: Text('Insert')),
+                ElevatedButton(onPressed: insert, child: Text('Insert')),
               ],
             ),
             SizedBox(height: 10),
@@ -300,7 +296,7 @@ class _AvlScreenState extends State<AvlScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(onPressed: _search, child: Text('Search')),
+                ElevatedButton(onPressed: search, child: Text('Search')),
               ],
             ),
             SizedBox(height: 10),
@@ -312,7 +308,7 @@ class _AvlScreenState extends State<AvlScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(onPressed: _delete, child: Text('Delete')),
+                ElevatedButton(onPressed: delete, child: Text('Delete')),
               ],
             ),
             SizedBox(height: 20),

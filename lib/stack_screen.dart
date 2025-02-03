@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class StackScreen extends StatefulWidget {
   @override
-  _StackScreenState createState() => _StackScreenState();
+  StackScreenState createState() => StackScreenState();
 }
 
-class _StackScreenState extends State<StackScreen> {
+class StackScreenState extends State<StackScreen> {
   List<String> stack = [];
   final textController = TextEditingController();
 
@@ -48,7 +48,7 @@ class _StackScreenState extends State<StackScreen> {
             SizedBox(height: 20),
             Expanded(
                 child: ListView.builder(
-                    reverse: true, // отображаем стек снизу вверх
+                    reverse: true,
                     itemCount: stack.length,
                     itemBuilder: (context, index) {
                       return Card(

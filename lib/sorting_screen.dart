@@ -3,53 +3,53 @@ import 'dart:math';
 
 class SortingScreen extends StatefulWidget {
   @override
-  _SortingScreenState createState() => _SortingScreenState();
+  SortingScreenState createState() => SortingScreenState();
 }
 
-class _SortingScreenState extends State<SortingScreen> {
-  List<int> _originalList = [];
-  List<int> _listInProgress = [];
-  String _selectedAlgorithm = 'Bubble Sort';
-  final _textController = TextEditingController();
-  bool _useRandom = false;
-  int _minRandom = 0;
-  int _maxRandom = 100;
-  double _randomCount = 10;
+class SortingScreenState extends State<SortingScreen> {
+  List<int> originalList = [];
+  List<int> listInProgress = [];
+  String selectedAlgorithm = 'Bubble Sort';
+  final textController = TextEditingController();
+  bool useRandom = false;
+  int minRandom = 0;
+  int maxRandom = 100;
+  double randomCount = 10;
   final random = Random();
-  DateTime? _startTime;
-  DateTime? _endTime;
+  DateTime? startTime;
+  DateTime? endTime;
   String get elapsedTime {
-    if (_startTime == null || _endTime == null) {
+    if (startTime == null || endTime == null) {
       return "0 ms";
     }
-    return (_endTime!.difference(_startTime!).inMicroseconds / 1000)
+    return (endTime!.difference(startTime!).inMicroseconds / 1000)
             .toStringAsFixed(2) +
         " ms";
   }
-  void _startTimer() {
-    _startTime = DateTime.now();
+  void startTimer() {
+    startTime = DateTime.now();
   }
 
-  void _stopTimer() {
-    _endTime = DateTime.now();
+  void stopTimer() {
+    endTime = DateTime.now();
   }
-  void _generateRandomList() {
+  void generateRandomList() {
     List<int> list = [];
-    for (int i = 0; i < _randomCount; i++) {
-      list.add(_minRandom + random.nextInt(_maxRandom - _minRandom));
+    for (int i = 0; i < randomCount; i++) {
+      list.add(minRandom + random.nextInt(maxRandom - minRandom));
     }
     setState(() {
-      _originalList = list;
-      _listInProgress = List.from(_originalList);
+      originalList = list;
+      listInProgress = List.from(originalList);
     });
   }
 
-  void _generateList() {
-    if (_useRandom) {
-      _generateRandomList();
+  void generateList() {
+    if (useRandom) {
+      generateRandomList();
       return;
     }
-    String input = _textController.text;
+    String input = textController.text;
     List<int> list = [];
     if (input.isNotEmpty) {
       try {
@@ -63,37 +63,38 @@ class _SortingScreenState extends State<SortingScreen> {
     }
 
     setState(() {
-      _originalList = list;
-      _listInProgress = List.from(_originalList);
+      originalList = list;
+      listInProgress = List.from(originalList);
     });
   }
 
   void _sort() async {
-    _startTimer();
+    startTimer();
     setState(() {
-      _listInProgress = List.from(_originalList);
+      listInProgress = List.from(originalList);
     });
-    switch (_selectedAlgorithm) {
+    switch (selectedAlgorithm) {
 
       case 'Bubble Sort':
-        await _bubbleSort();
+        await bubbleSort();
         break;
       case 'Insertion Sort':
-        await _insertionSort();
+        await insertionSort();
         break;
       case 'Merge Sort':
-        await _mergeSortWrapper();
+        await mergeSortWrapper();
         break;
       case 'Quick Sort':
-        await _quickSortWrapper();
+        await quickSortWrapper();
         break;
       default:
         break;
-    } _stopTimer();
+    } stopTimer();
+    setState(() {});
   }
 
-  Future<void> _bubbleSort() async {
-    List<int> list = List.from(_listInProgress);
+  Future<void> bubbleSort() async {
+    List<int> list = List.from(listInProgress);
     int n = list.length;
     for (int i = 0; i < n - 1; i++) {
       for (int j = 0; j < n - i - 1; j++) {
@@ -103,7 +104,7 @@ class _SortingScreenState extends State<SortingScreen> {
           list[j + 1] = temp;
 
           setState(() {
-            _listInProgress = List.from(list);
+            listInProgress = List.from(list);
           });
           await Future.delayed(Duration(milliseconds: 20));
         }
@@ -111,8 +112,8 @@ class _SortingScreenState extends State<SortingScreen> {
     }
       }
 
-  Future<void> _insertionSort() async {
-    List<int> list = List.from(_listInProgress);
+  Future<void> insertionSort() async {
+    List<int> list = List.from(listInProgress);
     for (int i = 1; i < list.length; i++) {
       int key = list[i];
       int j = i - 1;
@@ -120,35 +121,35 @@ class _SortingScreenState extends State<SortingScreen> {
         list[j + 1] = list[j];
         j = j - 1;
         setState(() {
-          _listInProgress = List.from(list);
+          listInProgress = List.from(list);
         });
         await Future.delayed(Duration(milliseconds: 20));
       }
       list[j + 1] = key;
       setState(() {
-        _listInProgress = List.from(list);
+        listInProgress = List.from(list);
       });
       await Future.delayed(Duration(milliseconds: 20));
     }
     
   }
 
-  Future<void> _mergeSortWrapper() async {
-    List<int> list = List.from(_listInProgress);
-    await _mergeSort(list, 0, list.length - 1);
+  Future<void> mergeSortWrapper() async {
+    List<int> list = List.from(listInProgress);
+    await mergeSort(list, 0, list.length - 1);
   }
 
-  Future<void> _mergeSort(List<int> list, int left, int right) async {
+  Future<void> mergeSort(List<int> list, int left, int right) async {
     if (left < right) {
       int middle = left + (right - left) ~/ 2;
-      await _mergeSort(list, left, middle);
-      await _mergeSort(list, middle + 1, right);
-      await _merge(list, left, middle, right);
+      await mergeSort(list, left, middle);
+      await mergeSort(list, middle + 1, right);
+      await merge(list, left, middle, right);
     }
     
   }
 
-  Future<void> _merge(List<int> list, int left, int middle, int right) async {
+  Future<void> merge(List<int> list, int left, int middle, int right) async {
     int n1 = middle - left + 1;
     int n2 = right - middle;
 
@@ -175,7 +176,7 @@ class _SortingScreenState extends State<SortingScreen> {
       }
       k++;
       setState(() {
-        _listInProgress = List.from(list);
+        listInProgress = List.from(list);
       });
       await Future.delayed(Duration(milliseconds: 20));
     }
@@ -184,7 +185,7 @@ class _SortingScreenState extends State<SortingScreen> {
       i++;
       k++;
       setState(() {
-        _listInProgress = List.from(list);
+        listInProgress = List.from(list);
       });
       await Future.delayed(Duration(milliseconds: 20));
     }
@@ -193,27 +194,27 @@ class _SortingScreenState extends State<SortingScreen> {
       j++;
       k++;
       setState(() {
-        _listInProgress = List.from(list);
+        listInProgress = List.from(list);
       });
       await Future.delayed(Duration(milliseconds: 20));
     }
   }
 
-  Future<void> _quickSortWrapper() async {
-    List<int> list = List.from(_listInProgress);
-    await _quickSort(list, 0, list.length - 1);
+  Future<void> quickSortWrapper() async {
+    List<int> list = List.from(listInProgress);
+    await quickSort(list, 0, list.length - 1);
     
   }
 
-  Future<void> _quickSort(List<int> list, int low, int high) async {
+  Future<void> quickSort(List<int> list, int low, int high) async {
     if (low < high) {
-      int pi = await _partition(list, low, high);
-      await _quickSort(list, low, pi - 1);
-      await _quickSort(list, pi + 1, high);
+      int pi = await partition(list, low, high);
+      await quickSort(list, low, pi - 1);
+      await quickSort(list, pi + 1, high);
     }
   }
 
-  Future<int> _partition(List<int> list, int low, int high) async {
+  Future<int> partition(List<int> list, int low, int high) async {
     int pivot = list[high];
     int i = (low - 1);
 
@@ -224,7 +225,7 @@ class _SortingScreenState extends State<SortingScreen> {
         list[i] = list[j];
         list[j] = temp;
         setState(() {
-          _listInProgress = List.from(list);
+          listInProgress = List.from(list);
         });
         await Future.delayed(Duration(milliseconds: 20));
       }
@@ -233,7 +234,7 @@ class _SortingScreenState extends State<SortingScreen> {
     list[i + 1] = list[high];
     list[high] = temp;
     setState(() {
-      _listInProgress = List.from(list);
+      listInProgress = List.from(list);
     });
     await Future.delayed(Duration(milliseconds: 20));
     return i + 1;
@@ -252,15 +253,15 @@ class _SortingScreenState extends State<SortingScreen> {
               children: [
                 Text('Random Numbers', style: TextStyle(fontSize: 16)),
                 Switch(
-                    value: _useRandom,
+                    value: useRandom,
                     onChanged: (value) {
                       setState(() {
-                        _useRandom = value;
+                        useRandom = value;
                       });
                     })
               ],
             ),
-            if (_useRandom) ...[
+            if (useRandom) ...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -272,7 +273,7 @@ class _SortingScreenState extends State<SortingScreen> {
                       onChanged: (value) {
                         int? val = int.tryParse(value);
                         if (val != null) {
-                          _minRandom = val;
+                          minRandom = val;
                         }
                       },
                     ),
@@ -285,7 +286,7 @@ class _SortingScreenState extends State<SortingScreen> {
                       onChanged: (value) {
                         int? val = int.tryParse(value);
                         if (val != null) {
-                          _maxRandom = val;
+                          maxRandom = val;
                         }
                       },
                     ),
@@ -298,12 +299,12 @@ class _SortingScreenState extends State<SortingScreen> {
                   Text("Count: ", style: TextStyle(fontSize: 16)),
                   Expanded(
                       child: Slider(
-                    value: _randomCount,
+                    value: randomCount,
                     min: 1,
                     max: 100,
                     onChanged: (value) {
                       setState(() {
-                        _randomCount = value;
+                        randomCount = value;
                       });
                     },
                   ))
@@ -311,7 +312,7 @@ class _SortingScreenState extends State<SortingScreen> {
               ),
             ] else
               TextField(
-                controller: _textController,
+                controller: textController,
                 decoration: InputDecoration(
                     labelText: 'Enter numbers (probels separated)'),
               ),
@@ -319,11 +320,11 @@ class _SortingScreenState extends State<SortingScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                    onPressed: _generateList, child: Text('Generate List')),
+                    onPressed: generateList, child: Text('Generate List')),
               ],
             ),
             DropdownButton<String>(
-              value: _selectedAlgorithm,
+              value: selectedAlgorithm,
               items: <String>[
                 'Bubble Sort',
                 'Insertion Sort',
@@ -338,17 +339,16 @@ class _SortingScreenState extends State<SortingScreen> {
               onChanged: (value) {
                 if (value != null) {
                   setState(() {
-                    _selectedAlgorithm = value;
+                    selectedAlgorithm = value;
                   });
                 }
               },
             ),
             ElevatedButton(onPressed: _sort, child: Text('Sort')),
             SizedBox(height: 20),
-            Text('Original List: ${_originalList.join(', ')}',
-                style: TextStyle(fontSize: 18)),
-            Text('List in progress: ${_listInProgress.join(', ')}',
-                style: TextStyle(fontSize: 18)),
+            Text('Elapsed Time: $elapsedTime', style: TextStyle(fontSize: 18)),
+            Text('Original List: ${originalList.join(', ')}',style: TextStyle(fontSize: 18)),
+            Text('List in progress: ${listInProgress.join(', ')}', style: TextStyle(fontSize: 18)),
           ],
         ),
       ),
