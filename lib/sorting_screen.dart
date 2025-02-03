@@ -18,14 +18,15 @@ class SortingScreenState extends State<SortingScreen> {
   final random = Random();
   DateTime? startTime;
   DateTime? endTime;
+
   String get elapsedTime {
     if (startTime == null || endTime == null) {
       return "0 ms";
     }
     return (endTime!.difference(startTime!).inMicroseconds / 1000)
-            .toStringAsFixed(2) +
-        " ms";
+            .toStringAsFixed(2) + " ms";
   }
+
   void startTimer() {
     startTime = DateTime.now();
   }
@@ -33,6 +34,7 @@ class SortingScreenState extends State<SortingScreen> {
   void stopTimer() {
     endTime = DateTime.now();
   }
+
   void generateRandomList() {
     List<int> list = [];
     for (int i = 0; i < randomCount; i++) {
@@ -307,7 +309,9 @@ class SortingScreenState extends State<SortingScreen> {
                         randomCount = value;
                       });
                     },
-                  ))
+                  ),
+                  ), Text(" ${randomCount.round()}",
+                      style: TextStyle(fontSize: 16)),
                 ],
               ),
             ] else
